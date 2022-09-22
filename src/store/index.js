@@ -12,6 +12,7 @@ const store = createStore({
     male: (state) => (state.gender = "male"),
     female: (state) => (state.gender = "female"),
     changingPopup: (state) => (state.popUpVisible = !state.popUpVisible),
+    unspecified: (state) => (state.gender = "unspecified"),
   },
   actions: {
     changeToFemale() {
@@ -22,6 +23,9 @@ const store = createStore({
     },
     changePopup() {
       this.commit("changingPopup");
+    },
+    changeToUnspecified() {
+      this.commit("unspecified");
     },
   },
   getters: {

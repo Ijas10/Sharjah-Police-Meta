@@ -12,7 +12,7 @@
           class="modal1"
         >
           <div class="d-flex flex-column align-items-center">
-            <p class="mb-4 fw-bold text-center">
+            <p class="mb-4 fw-bold text-center colorof">
               Please give access to experience an interactive voice session.
             </p>
             <b-button class="w-50" @click="afterClicking" variant="primary">
@@ -38,17 +38,29 @@
               alt="pic"
             />
             <img
-              v-else
+              v-if="genderGetter === 'female'"
               src="../assets/img/avatar-1.png"
               class="avatar1"
               alt="pic"
             />
+            <img
+              v-if="genderGetter === 'unspecified'"
+              src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
+              class="avatar12"
+              alt="pic"
+            />
+
             <div class="app-slider__footer">
-              <button
+              <a
+                class="btn btn-primary1 atag btn-md d-flex btn-full align-items-center justify-content-center"
+                href="https://sharjah-police.xrpro.cloud/portal?name=publicuser&room=store_room_tcp"
+                >Choose</a
+              >
+              <!-- <button
                 class="btn btn-primary1 btn-md d-flex btn-full align-items-center justify-content-center"
               >
                 Choose
-              </button>
+              </button> -->
             </div>
           </splide-slide>
         </splide>
@@ -78,7 +90,7 @@ export default {
     const greet = () =>
       speechSynthesis.speak(
         new SpeechSynthesisUtterance(
-          "Choose your avatar by saying next or back"
+          "Choose your avatar by saying next or back and confirm by saying ok"
         )
       );
     return {
@@ -93,14 +105,14 @@ export default {
     ...mapActions(["changePopup"]),
     afterClicking() {
       this.greet();
-      setTimeout(this.toggleListening, 3000);
+      setTimeout(this.toggleListening, 4300);
       this.changePopup();
     },
   },
   mounted() {
     if (!this.popupGetter) {
       this.greet();
-      setTimeout(this.toggleListening, 3000);
+      setTimeout(this.toggleListening, 4300);
     }
   },
   updated() {
@@ -111,8 +123,11 @@ export default {
     if (this.note.slice(-4, -1) === "nex") {
       document.querySelector(".splide__arrow--next").click();
     }
-    if (this.note.slice(-4, -1) === "bac") {
+    if (this.note.slice(-4, -1) === "bac" || this.note.slice(-3, -1) === "Ba") {
       document.querySelector(".splide__arrow--prev").click();
+    }
+    if (this.note.slice(-2) === "ok") {
+      document.querySelector(".atag").click();
     }
   },
 
@@ -235,6 +250,10 @@ a {
 }
 .avatar1 {
   width: 100%;
+}
+.avatar12 {
+  width: 90%;
+  border-radius: 10px;
 }
 .customStyle {
   background: linear-gradient(

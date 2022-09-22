@@ -1,39 +1,43 @@
 <script>
 import useSpeechRecognition from "../components/SpeechRecognition.js";
 import router from "../router/index.js";
+
 import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   setup() {
-    const { toggleListening, note, error, isListening } =
+    const { toggleListening, note, error, isListening, numbers } =
       useSpeechRecognition();
+
     const greet = () =>
       speechSynthesis.speak(
         new SpeechSynthesisUtterance(
           "Hi, Welcome to the meta version of Sharjah Police. Please say your emirates ID and say submit after filling the input field"
         )
       );
+
     return {
       toggleListening,
       note,
       error,
       isListening,
       greet,
+      numbers,
     };
   },
 
   computed: {
     ...mapGetters(["popupGetter"]),
     ...mapState(["popUpVisible"]),
-    first() {
-      var str = this.note;
-      var c = "0123456789";
+    // first() {
+    //   var str = this.note;
+    //   var c = "0123456789";
 
-      function check(x) {
-        return c.includes(x) ? true : false;
-      }
-      var matches = [...str].reduce((x, y) => (check(y) ? x + y : x), "");
-      return matches;
-    },
+    //   function check(x) {
+    //     return c.includes(x) ? true : false;
+    //   }
+    //   var matches = [...str].reduce((x, y) => (check(y) ? x + y : x), "");
+    //   return matches;
+    // },
   },
   methods: {
     ...mapActions(["changePopup"]),
@@ -45,7 +49,7 @@ export default {
     },
     afterClicking() {
       this.greet();
-      setTimeout(this.toggleListening, 9000);
+      setTimeout(this.toggleListening, 8000);
       this.changePopup();
     },
   },
@@ -53,18 +57,21 @@ export default {
   mounted() {
     if (!this.popupGetter) {
       this.greet();
-      setTimeout(this.toggleListening, 9000);
+      setTimeout(this.toggleListening, 8000);
     }
-    console.log(this.isListening);
   },
 
   updated() {
     console.log("Input value is", this.note.replace(" ", ""));
     const finals = this.note.slice(-6, -1) === "submi";
     console.log("rescongition running", this.isListening);
-    if (finals) {
+    if (finals && this.numbers.length >= 10) {
       this.toggleListening();
       setTimeout(() => router.push("/choose-body-type"), 300);
+    }
+    if (this.note.slice(-6, -1) === "delet") {
+      console.log("after callin delete");
+      this.note = "";
     }
   },
 };
@@ -82,7 +89,7 @@ export default {
         class="modal1"
       >
         <div class="d-flex flex-column align-items-center">
-          <p class="mb-4 fw-bold text-center">
+          <p class="mb-4 fw-bold text-center colorof">
             Please give access to experience an interactive voice session.
           </p>
           <b-button class="w-50" @click="afterClicking" variant="primary">
@@ -299,10 +306,13 @@ export default {
               <div class="form-wrap">
                 <h5>META</h5>
                 <h3>Welcome to Sharjah Police</h3>
+                <p class="d-none">{{ note }}</p>
+                <p>hello{{ note }}</p>
+
                 <form>
                   <input
                     type="number"
-                    :value="first"
+                    v-model="numbers"
                     class="form-control"
                     placeholder="Enter your Emirates ID to get started"
                   />

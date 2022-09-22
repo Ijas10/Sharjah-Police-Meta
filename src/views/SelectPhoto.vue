@@ -13,7 +13,7 @@
         class="modal1"
       >
         <div class="d-flex flex-column align-items-center">
-          <p class="mb-4 fw-bold text-center">
+          <p class="mb-4 fw-bold text-center colorof">
             Please give access to experience an interactive voice session.
           </p>
           <b-button class="w-50" @click="afterClicking" variant="primary">
@@ -115,4 +115,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.colorof {
+  color: black !important;
+}
+</style>

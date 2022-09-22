@@ -2,16 +2,17 @@
   <main class="app-main app-choose-body-type">
     <div>
       <b-modal
+        id="my-modal"
         centered
         hide-footer
         hide-header
-        no-close-on-backdrop
         v-model="popupGetter"
+        no-close-on-backdrop
         title="BootstrapVue"
         class="modal1"
       >
         <div class="d-flex flex-column align-items-center">
-          <p class="mb-4 fw-bold text-center">
+          <p class="mb-4 fw-bold text-center colorof">
             Please give access to experience an interactive voice session.
           </p>
           <b-button class="w-50" @click="afterClicking" variant="primary">
@@ -59,7 +60,7 @@
             <button
               class="form-check-label d-flex justify-content-center align-items-center"
               for="radio3"
-              @click="navigateToFemale"
+              @click="navigateToUnSpecified"
             >
               Dont't Specify
             </button>
@@ -78,11 +79,16 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      speech: "",
+      stateof: true,
     };
   },
   methods: {
-    ...mapActions(["changeToFemale", "changeToMale", "changePopup"]),
+    ...mapActions([
+      "changeToFemale",
+      "changeToUnspecified",
+      "changeToMale",
+      "changePopup",
+    ]),
     navigateToMale() {
       this.changeToMale();
       this.toggleListening();
@@ -97,9 +103,16 @@ export default {
         router.push("/select-photo");
       }, 300);
     },
+    navigateToUnSpecified() {
+      this.changeToUnspecified();
+      this.toggleListening();
+      setTimeout(() => {
+        router.push("/select-photo");
+      }, 300);
+    },
     afterClicking() {
       this.greet();
-      setTimeout(this.toggleListening, 2000);
+      setTimeout(this.toggleListening, 1800);
       this.changePopup();
     },
   },
@@ -113,6 +126,7 @@ export default {
       speechSynthesis.speak(
         new SpeechSynthesisUtterance("Choose your body type")
       );
+
     return {
       note,
       error,
@@ -125,13 +139,11 @@ export default {
   mounted() {
     if (!this.popupGetter) {
       this.greet();
-      setTimeout(this.toggleListening, 2000);
+      setTimeout(this.toggleListening, 1800);
     }
   },
 
   updated() {
-    this.speech = this.note;
-
     console.log(this.note);
     if (this.note.slice(-9, -1) === "masculin") {
       this.changeToMale();
@@ -146,7 +158,9 @@ export default {
     }
 
     if (this.note.slice(-13, -1) === "don't specif") {
+      this.changeToUnspecified();
       this.toggleListening();
+
       setTimeout(() => router.push("/select-photo"), 300);
     }
 
